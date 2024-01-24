@@ -1,29 +1,52 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"strconv"
 )
+
+const accountBalanceFile = "balance.txt"
+
+func getBalanceFromFile() (float64,error) {
+	data,err := os.ReadFile(accountBalanceFile)
+	if err != nil {
+		return 1000, errors.New("Failed to get balance from file")
+	}
+	balanceText := string(data)
+	balance, err := strconv.ParseFloat(balanceText, 64)
+	if err != nil {
+		return 1000, errors.New("Failed to parse balance")
+	}
+	return balance, nil
+}
 
 func writeBalanceToFile(balance float64){
 	balanceText := fmt.Sprint(balance)
-	os.WriteFile("balance.txt",[]byte(balanceText),0644)
+	os.WriteFile(accountBalanceFile,[]byte(balanceText),0644)
 }
+
 
 func main() {
 
-	var accountBalance float64 = 1000
+	var accountBalance,err  = getBalanceFromFile()
+	if err != nil {
+		fmt.Println("ERROR")
+		fmt.Println(err)
+		fmt.Println("--------------------------")
+	}
 	var choice int
 	fmt.Println("Welcome to GO Bank")
 
 		for {
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check the balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
-		fmt.Print("Choose a number:")
-		fmt.Scan(&choice)
+			fmt.Println("What do you want to do?")
+			fmt.Println("1. Check the balance")
+			fmt.Println("2. Deposit money")
+			fmt.Println("3. Withdraw money")
+			fmt.Println("4. Exit")
+			fmt.Print("Choose a number:")			
+			fmt.Scan(&choice)
 
 		switch choice{
 		case 1:
